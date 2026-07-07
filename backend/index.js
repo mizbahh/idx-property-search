@@ -21,3 +21,6 @@ app.get("/api/health", async (req, res) => {
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
 });
+
+const propertiesRouter = require("./routes/properties");
+app.use("/api/properties", propertiesRouter);
