@@ -8,6 +8,21 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// logging middleware
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    console.log(`${req.method} ${req.url} ${res.statusCode} - ${duration}ms`);
+  });
+  next();
+});
+
+// routes
+const propertiesRouter = require("./routes/properties");
+app.use("/api/properties", propertiesRouter);
+
+// health check
 app.get("/api/health", async (req, res) => {
   try {
     await pool.query("SELECT 1");
@@ -21,6 +36,3 @@ app.get("/api/health", async (req, res) => {
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
 });
-
-const propertiesRouter = require("./routes/properties");
-app.use("/api/properties", propertiesRouter);
